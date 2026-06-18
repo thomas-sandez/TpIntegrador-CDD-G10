@@ -16,7 +16,7 @@ function formatBits(val) {
   return `${val} bits (${colors})`
 }
 
-export default function ProcessingParams({ params, onParamsChange, onApply, onReset, onExport, onImageUpload }) {
+export default function ProcessingParams({ params, onParamsChange, onApply, onReset, onExport, onImageUpload, resetKey }) {
   const fileInputRef = useRef(null)
 
   const handleResolucionChange = (e) => {
@@ -85,6 +85,7 @@ export default function ProcessingParams({ params, onParamsChange, onApply, onRe
           <p className="upload-zone__label">Cargar Imagen</p>
           <p className="upload-zone__hint">PNG, JPG hasta 10MB</p>
           <input
+            key={resetKey}
             ref={fileInputRef}
             type="file"
             accept="image/png,image/jpeg,image/jpg"
@@ -197,7 +198,7 @@ export default function ProcessingParams({ params, onParamsChange, onApply, onRe
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Exportar
+            Descargar
           </button>
         </div>
         <button id="btn-aplicar" className="btn btn--primary" onClick={onApply}>

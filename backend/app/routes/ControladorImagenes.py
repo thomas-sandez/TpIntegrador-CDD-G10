@@ -26,7 +26,7 @@ def subir_imagen():
         return jsonify({"error": "Archivo invalido"}), 400
     
     id_imagen = AdminImagenes.guardar_imagen(archivo)
-    return jsonify({"id_imagen": id_imagen.id}), 201
+    return jsonify({"id_imagen": id_imagen.id_imagen}), 201
 
 
 @controlador_imagenes_bp.route('/images', methods=['GET'])

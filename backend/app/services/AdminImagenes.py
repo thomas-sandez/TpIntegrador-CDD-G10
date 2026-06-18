@@ -3,13 +3,14 @@ import uuid
 import cv2
 import numpy as np
 from datetime import datetime
-from app.models.imagen import Imagen
 
 
-DIRECTORIO = "uploads"
+# Ruta absoluta al directorio uploads (backend/uploads/)
+# __file__ está en backend/app/services/, subimos 3 niveles para llegar a backend/
+DIRECTORIO = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'uploads')
 os.makedirs(DIRECTORIO, exist_ok=True)
 
-class adminImagenes:
+class AdminImagenes:
 
     @staticmethod
     def cuantizar_canales(imagen, bits_por_canal):
@@ -19,15 +20,16 @@ class adminImagenes:
         return (imagen // (256 // niveles) * (255 // (niveles - 1))).astype(np.uint8)
     
     @staticmethod
-    def guardar_imagen(directorio):
+    def guardar_imagen(archivo):
         from app import db
+        from app.models.imagen import Imagen
 
         imagen_id = str(uuid.uuid4())
         ruta_archivo = os.path.join(DIRECTORIO, f"{imagen_id}.jpg")
 
-        directorio.save(ruta_archivo)
+        archivo.save(ruta_archivo)
 
-        nueva_imagen = Imagen(id=imagen_id, ruta=ruta_archivo, fecha_subida=datetime.now())
+        nueva_imagen = Imagen(id_imagen=imagen_id, ruta=ruta_archivo, fecha_subida=datetime.now())
         db.session.add(nueva_imagen)
         db.session.commit()
 
@@ -36,12 +38,14 @@ class adminImagenes:
 
     @staticmethod
     def obtener_lista_ids():
+        from app.models.imagen import Imagen
         imagenes = Imagen.query.order_by(Imagen.fecha_subida.desc()).all()
-        return [imagen.id for imagen in imagenes]
+        return [imagen.id_imagen for imagen in imagenes]
     
 
     @staticmethod
     def obtener_ruta_original(id_imagen):
+        from app.models.imagen import Imagen
         imagen = Imagen.query.get(id_imagen)
         if not imagen or not os.path.exists(imagen.ruta):
             return None
@@ -50,6 +54,7 @@ class adminImagenes:
 
     @classmethod
     def procesar_digitalizacion(cls, id_imagen, ancho, alto, bits_por_canal):
+        from app.models.imagen import Imagen
         imagen_db = Imagen.query.get(id_imagen)
         if not imagen_db or not os.path.exists(imagen_db.ruta):
             return None
