@@ -107,7 +107,13 @@
 .algo-card__code-block {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+}
+
+.algo-card__code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .algo-card__code-label {
@@ -118,13 +124,79 @@
   font-weight: 500;
 }
 
+.algo-card__code-bits {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 99px;
+  letter-spacing: 0.2px;
+}
+
+/* Terminal-style scrollable viewer */
+.algo-card__code-viewer {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  max-height: 72px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+  position: relative;
+}
+
+.algo-card__code-viewer::-webkit-scrollbar {
+  width: 4px;
+}
+.algo-card__code-viewer::-webkit-scrollbar-track {
+  background: transparent;
+}
+.algo-card__code-viewer::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 2px;
+}
+
 .algo-card__code-text {
   font-family: 'Courier New', Courier, monospace;
   font-size: 11px;
+  line-height: 1.65;
   color: var(--text-secondary);
-  word-break: break-all;
-  line-height: 1.4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
 }
+
+/* Each 8-bit chunk */
+.algo-card__code-chunk {
+  display: inline-block;
+  letter-spacing: 0.5px;
+  padding: 0 1px;
+  border-radius: 2px;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.algo-card__code-chunk:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+  cursor: default;
+}
+
+/* Accent-card chunks tinted on hover */
+.algo-card--accent .algo-card__code-chunk:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Teal-card chunks tinted on hover */
+.algo-card--teal .algo-card__code-chunk:hover {
+  background: rgba(20, 184, 166, 0.12);
+  color: #14b8a6;
+}
+
 
 /* ─── Metrics ─────────────────────────────────────────────────────────────── */
 .algo-card__metrics {

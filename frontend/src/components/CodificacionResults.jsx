@@ -42,8 +42,22 @@ function AlgorithmCard({ name, color, icon, resultado, onCopy, copied }) {
       </div>
 
       <div className="algo-card__code-block">
-        <span className="algo-card__code-label">Código:</span>
-        <p className="algo-card__code-text">{codigo?.slice(0, 40)}{codigo?.length > 40 ? '…' : ''}</p>
+        <div className="algo-card__code-header">
+          <span className="algo-card__code-label">Código binario</span>
+          {codigo && (
+            <span className="algo-card__code-bits">{codigo.length} bits</span>
+          )}
+        </div>
+        <div className="algo-card__code-viewer">
+          <code className="algo-card__code-text">
+            {codigo
+              ? codigo.match(/.{1,8}/g)?.map((chunk, i) => (
+                  <span key={i} className="algo-card__code-chunk">{chunk}</span>
+                ))
+              : '—'
+            }
+          </code>
+        </div>
       </div>
 
       <div className="algo-card__metrics">
