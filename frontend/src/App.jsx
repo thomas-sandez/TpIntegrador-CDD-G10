@@ -4,11 +4,14 @@ import './App.css'
 import Navbar from './components/Navbar'
 import ProcessingParams from './components/ProcessingParams'
 import ImageComparison from './components/ImageComparison'
+import TextInput from './components/TextInput'
+import CodificacionResults from './components/CodificacionResults'
 import {
   uploadImage,
   getOriginalImageUrl,
   getCompressedImageUrl,
 } from './services/apiImages'
+import { comprimir as comprimirTexto } from './services/apiAlgoritmos'
 
 const DEFAULT_PARAMS = {
   resolucion: 500,
@@ -122,20 +125,52 @@ function DigitalizacionPage() {
 }
 
 function CodificacionPage() {
+  const [resultado, setResultado] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleCodificar = async (texto) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await comprimirTexto(texto)
+      setResultado(data)
+    } catch (err) {
+      setError(err.message || 'Error al codificar el texto')
+      setResultado(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="page">
       <div className="page__subheader">
         <div className="page__subheader-left">
-          <h1 className="page__title">Codificación</h1>
-          <p className="page__subtitle">Próximamente disponible</p>
+          <h1 className="page__title">Codificación de Datos</h1>
+          <p className="page__subtitle">Compresión y corrección de errores</p>
+        </div>
+        <div className="page__subheader-right">
+          {loading && (
+            <div className="loading-indicator">
+              <div className="spinner" />
+              <span>Codificando...</span>
+            </div>
+          )}
+          {error && (
+            <div className="error-banner">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
         </div>
       </div>
-      <div className="coming-soon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
-        <p>Esta sección estará disponible próximamente.</p>
+
+      <div className="page__content">
+        <TextInput onCodificar={handleCodificar} loading={loading} />
+        <CodificacionResults resultado={resultado} error={error} />
       </div>
     </div>
   )
