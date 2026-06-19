@@ -312,9 +312,15 @@ class AdminAlgoritmos:
             }
 
         def texto_a_bits(texto_entrada):
+            texto_entrada = texto_entrada.strip()
+            if texto_entrada and all(ch in '01' for ch in texto_entrada):
+                return [int(bit) for bit in texto_entrada]
             return [int(bit) for parte in (format(ord(caracter), '08b') for caracter in texto_entrada) for bit in parte]
 
-        def bits_a_texto(bits):
+        def bits_a_texto(bits, original_is_binary=False):
+            if original_is_binary:
+                return ''.join(str(bit) for bit in bits)
+
             texto_decodificado = []
             for i in range(0, len(bits), 8):
                 bloque = bits[i:i + 8]
@@ -368,10 +374,11 @@ class AdminAlgoritmos:
                     bits_datos.append(bits_entrada[i])
             return bits_datos
 
+        es_binario = bool(texto.strip()) and all(ch in '01' for ch in texto.strip())
         bits_originales = texto_a_bits(texto)
         bits_codificados = codificar(bits_originales)
         bits_decodificados = decodificar(bits_codificados)
-        texto_decodificado = bits_a_texto(bits_decodificados)
+        texto_decodificado = bits_a_texto(bits_decodificados, original_is_binary=es_binario)
 
         return {
             "metodo": "Hamming",
@@ -380,9 +387,11 @@ class AdminAlgoritmos:
             "bits_codificados": bits_codificados,
             "bits_decodificados": bits_decodificados,
             "texto_decodificado": texto_decodificado,
+            "texto_binario_original": ''.join(str(bit) for bit in bits_originales) if es_binario else None,
             "longitud_bits_original": len(bits_originales),
             "longitud_bits_codificados": len(bits_codificados),
-            "longitud_bits_decodificados": len(bits_decodificados)
+            "longitud_bits_decodificados": len(bits_decodificados),
+            "original_es_binario": es_binario,
         }
 
     # ── Hamming bit-level helpers (usados por la UI de bits) ─────────────────
