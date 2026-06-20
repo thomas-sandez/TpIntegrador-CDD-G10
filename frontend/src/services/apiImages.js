@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api/imagenes'
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/imagenes`
 
 /**
  * Convierte bits totales (ej. 24) a bits por canal RGB (ej. 8).
