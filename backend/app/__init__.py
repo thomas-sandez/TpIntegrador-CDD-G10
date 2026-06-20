@@ -16,12 +16,17 @@ def create_app():
     app = Flask(__name__, static_folder='static')
     app.config.from_object(DevelopmentConfig)
 
-    # CORS: en Railway se configura ALLOWED_ORIGINS con la URL del frontend
-    # Ej: https://mi-frontend.railway.app
-    # En local, se permite todo para facilitar el desarrollo
+    # CORS: permite todos los orígenes por defecto (útil para deploy público del TP).
+    # Para restringir, setear ALLOWED_ORIGINS=https://mi-frontend.railway.app en Railway.
     allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*')
     origins = [o.strip() for o in allowed_origins.split(',')] if allowed_origins != '*' else '*'
-    CORS(app, origins=origins)
+    CORS(
+        app,
+        origins=origins,
+        methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allow_headers=['Content-Type', 'Authorization', 'Accept'],
+        supports_credentials=False,
+    )
 
     db.init_app(app)
 
