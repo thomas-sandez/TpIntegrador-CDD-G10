@@ -13,7 +13,7 @@ import {
   getOriginalImageUrl,
   getCompressedImageUrl,
 } from './services/apiImages'
-import { comprimir as comprimirTexto } from './services/apiAlgoritmos'
+import { comprimir as comprimirTexto, hammingCodificarBits, hammingDecodificarBits } from './services/apiAlgoritmos'
 
 const DEFAULT_PARAMS = {
   resolucion: 500,
@@ -148,15 +148,27 @@ function CodificacionPage() {
     }
   }
 
-  // Hamming state (sin funcionalidad — la lógica la conecta otra persona)
+  // Hamming state
   const [hammingResultado, setHammingResultado] = useState(null)
   const [hammingModo, setHammingModo] = useState('decodificar')
-  const [errorHamming] = useState(null)
-  const [loadingHamming] = useState(false)
+  const [errorHamming, setErrorHamming] = useState(null)
+  const [loadingHamming, setLoadingHamming] = useState(false)
 
-  const handleHamming = ({ modo }) => {
-    setHammingModo(modo)
-    setHammingResultado(null)
+  const handleHamming = async ({ bits, modo }) => {
+    try {
+      setLoadingHamming(true)
+      setErrorHamming(null)
+      setHammingModo(modo)
+      const data = modo === 'codificar'
+        ? await hammingCodificarBits(bits)
+        : await hammingDecodificarBits(bits)
+      setHammingResultado(data)
+    } catch (err) {
+      setErrorHamming(err.message || 'Error al procesar Hamming')
+      setHammingResultado(null)
+    } finally {
+      setLoadingHamming(false)
+    }
   }
 
   const loading = subTab === 'compresion' ? loadingComp : loadingHamming
