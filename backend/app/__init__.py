@@ -28,10 +28,21 @@ def create_app():
         supports_credentials=False,
     )
 
+    # Garantiza headers CORS en TODAS las respuestas (incluyendo errores 4xx/5xx).
+    # flask-cors a veces omite los headers en respuestas de error.
+    @app.after_request
+    def add_cors_headers(response):
+        origin = os.environ.get('ALLOWED_ORIGINS', '*')
+        response.headers['Access-Control-Allow-Origin'] = origin if origin != '*' else '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Accept'
+        return response
+
     db.init_app(app)
 
     app.register_blueprint(prueba_bp, url_prefix='/api/prueba')
     app.register_blueprint(controlador_algoritmos_bp, url_prefix='/api/algoritmos')
     app.register_blueprint(controlador_imagenes_bp, url_prefix='/api/imagenes')
 
-    return app
+    return app
+
